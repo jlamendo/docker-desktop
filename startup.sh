@@ -4,7 +4,7 @@
 mkdir /var/run/sshd 
 
 # Add docker user and generate a random password with 12 characters that includes at least one capital letter and number.
-DOCKER_PASSWORD=`pwgen -c -n -1 12`
+DOCKER_PASSWORD="letmein"
 echo User: docker Password: $DOCKER_PASSWORD
 DOCKER_ENCRYPYTED_PASSWORD=`perl -e 'print crypt('"$DOCKER_PASSWORD"', "aa"),"\n"'`
 useradd -m -d /home/docker -p $DOCKER_ENCRYPYTED_PASSWORD docker
@@ -16,8 +16,10 @@ chsh -s /bin/bash docker
 
 # Copy the config files into the docker directory
 cd /src/config/ && sudo -u docker cp -R .[a-z]* [a-z]* /home/docker/
-sudo -u docker curl https://github.com/jlamendo.keys -o /home/docker/.ssh/authorized_keys
 
+sudo -u docker 'mkdir -p /home/docker/.ssh'
+sudo -u docker 'curl https://github.com/jlamendo.keys -o /home/docker/.ssh/authorized_keys'
+sudo -u docker 'chmod 644 /home/docker/.ssh/authorized_keys'
 # restarts the xdm service
 /etc/init.d/xdm restart
 
